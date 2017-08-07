@@ -1,0 +1,10 @@
+*.resx eol=crlf
+*.cs eol=crlf
+*.txt eol=crlf
+*.settings eol=crlf
+*.csproj eol=crlf
+*.sln eol=crlf
+LICENSE eol=crlf
+.gitattributes eol=crlf
+.gitignore eol=crlf
+*.md eol=crlf
