@@ -211,10 +211,12 @@ namespace hedwadtool
         public void BuildWAD(string fn)
         {
             string hedfile = fn.ToLower().Replace("__layout.txt", ".hed");
+            string hed1file = fn.ToLower().Replace("__layout.txt", ".hed1");
             string wadfile = fn.ToLower().Replace("__layout.txt", ".wad");
 
             BinaryWriter wad = new BinaryWriter(File.Open(wadfile, FileMode.Create));
             BinaryWriter hed = new BinaryWriter(File.Open(hedfile, FileMode.Create));
+            BinaryWriter hed1 = new BinaryWriter(File.Open(hed1file, FileMode.Create));
 
             foreach (HEDFile h in files)
             {
@@ -228,10 +230,22 @@ namespace hedwadtool
                 hed.Write(h.checksum);
                 hed.Write(h.offset);
                 hed.Write(h.size);
+
+
+                hed1.Write(h.name.ToCharArray());
+
+                int diff2 = h.name.Length % 4;
+                hed1.Write(new byte[(diff == 0) ? 4 : 4 - diff2]);
+
+                hed1.Write(h.offset);
+                hed1.Write(h.size);
             }
+
+            hed1.Write((byte)0xFF);
 
             wad.Close();
             hed.Close();
+            hed1.Close();
         }
 
     }
