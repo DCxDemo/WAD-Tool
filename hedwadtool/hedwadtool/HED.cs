@@ -114,7 +114,7 @@ namespace hedwadtool
 
         private bool isValidChar(byte x)
         {
-            if ((char)x > '0' & (char)x < 'z') return true;
+            if (x >= 0x2E & (char)x < 'z') return true;
             return false;
         }
 
