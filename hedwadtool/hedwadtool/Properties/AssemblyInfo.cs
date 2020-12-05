@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // Управление общими сведениями о сборке осуществляется с помощью 
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
-[assembly: AssemblyTitle("chescktest")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("hedwadtool")]
+[assembly: AssemblyDescription("Builds and extracts PS1 HED/WAD containers found in ealry Neversoft game engine")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("chescktest")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2016")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("hedwadtool")]
+[assembly: AssemblyCopyright("2016, DCxDemo*")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

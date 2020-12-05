@@ -1,24 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace hedwadtool
 {
     class Checksum
     {
+        public static uint result = 0xFFFFFFFF;
+        static int c = 0;
+        static int i = 0;
 
         public static uint Calc(string k, bool allowCaps)
         {
-            string str = allowCaps ? k : k.ToLower();
+            if (!allowCaps)
+                k = k.ToLower();
 
-            uint result = 0xFFFFFFFF;
+            result = 0xFFFFFFFF;
 
-            foreach (char c in str)
+            for (c = 0; c < k.Length; c++)
             {
-                uint temp = result ^ c;
+                uint temp = result ^ k[c];
 
-                for (int i = 0; i < 8; i++)
+                for (i = 0; i < 8; i++)
                 {
                     result = (result >> 31) | 2 * result;
                     if ((temp & 1) != 0) result ^= 0xEDB88320;

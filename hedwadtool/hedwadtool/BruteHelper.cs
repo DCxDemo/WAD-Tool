@@ -51,7 +51,7 @@ namespace hedwadtool
 
         public bool ChecksumMatches()
         {
-            if (checksumuint == Checksum.Calc(sb.ToString(), false))
+            if (checksumuint == Checksum.Calc(sb.ToString(), true)) //true because we already brute lowercase
                 return true;
 
             return false;
