@@ -35,7 +35,8 @@ namespace hedwadtool
         {
             result = 0;
 
-            if (hex == null) return false;
+            if (hex == "")
+                return false;
 
             try
             {

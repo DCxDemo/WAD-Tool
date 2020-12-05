@@ -70,7 +70,7 @@ namespace hedwadtool
 
 
 
-        List<ThpsWadEntry> Entries = new List<ThpsWadEntry>();
+        public List<ThpsWadEntry> Entries = new List<ThpsWadEntry>();
 
         public ThpsWad(BinaryReader hed, BinaryReader wad)
         {
@@ -215,7 +215,13 @@ namespace hedwadtool
 
                 if (archiveType == ArchiveType.WadRaw)
                 {
-                    throw new NotImplementedException("can't write raw WAD yet");
+                    using (BinaryWriter hed = new BinaryWriter(File.OpenWrite(Path.ChangeExtension(filename, ".hed"))))
+                    {
+                        foreach (ThpsWadEntry w in Entries)
+                            w.WriteWadRaw(hed);
+
+                        hed.Write((int)-1);
+                    }
                 }
 
                 using (BinaryWriter wad = new BinaryWriter(File.OpenWrite(Path.ChangeExtension(filename, ".wad"))))

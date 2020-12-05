@@ -4641,15 +4641,77 @@ foreund1.bmp
 shtslve0.bmp
 lngslve0.bmp
 
+
 # checksum collisions mean that source string is obviously different,
 # yet results in same checksum, hence hed file will be fine.
 # these have to be replaced with proper names, when and if found 
+# original names are likely to have 8 chars
+# these are mostly for unused files in th3 and th4
 
 # collision for 1B782A45
 vplc86.bmp 
+
+# collision for 58C413C8
+vplc87.bmp
 
 # collision for 1FE343C2
 kq_8k_.bmp 
 
 # collision for 32FC2381
 48hgh5.bmp 
+
+# collision for 3EDCA5B2
+wkk5n4_.bmp
+
+# collision for 6301DABD
+rt1xl0.bmp
+
+# collision for 20BDE330
+rt1xl1.bmp
+
+# collision for 5C5F7A4F
+rt1xl2.bmp
+
+# collision for 6AEEB8C9
+_4aso3.bmp
+
+# collision for 78FC9C09
+mbmoqa.bmp
+
+# collision for 041E0576
+mbmoqb.bmp
+
+# collision for 47A23CFB
+mbmoqc.bmp
+
+# collision for 42B17881
+0bwd7.bmp
+
+# collision for C2387943
+lqx5l3.bmp
+
+# collision for 06CC55E7
+bmxo40.bmp
+
+# collision for 423E3CCD
+yaxy62__.bmp
+
+# collision for D60D2281
+00y570__.bmp
+
+# collision for 24268AB7
+edjf_4__.bmp
+
+# collision for B3F22329
+rjt2gl.bmp
+
+# collision for 8CAC83DB
+rjt2gn.bmp
+
+# collision for F04E1AA4
+rjt2gm.bmp
+
+# collision for 7D609C3F
+_g_0___.bmp
+
+# unknown, font 2F7BA26F

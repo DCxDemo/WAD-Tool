@@ -67,6 +67,18 @@ namespace hedwadtool
             bw.Write(size);
         }
 
+        public void WriteWadRaw(BinaryWriter bw)
+        {
+            bw.Write(name);
+
+            int diff = size % 2048;
+            int diff2 = name.Length % 4;
+            bw.Write(new byte[(diff == 0) ? 4 : 4 - diff2]);
+
+            bw.Write(offset);
+            bw.Write(size);
+        }
+
         public ThpsWadEntry(uint c, int off, int s)
         {
             checksum = c;
@@ -79,7 +91,5 @@ namespace hedwadtool
         {
             return name + " (" + size + " bytes) at 0x" + offset;
         }
-
-
     }
 }
