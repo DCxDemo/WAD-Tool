@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace hedwadtool
+namespace LegacyThps.Containers
 {
     class ThpsWad
     {
@@ -48,13 +48,11 @@ namespace hedwadtool
                     if (temp != "")
                         if (!temp.Contains("#"))
                         {
-                            uint crc = Checksum.Calc(temp, true);
+                            uint crc = Checksum.CalcLegacy(temp, true);
                             if (!checksums.ContainsKey(crc))
                                 checksums.Add(crc, temp);
                         }
-                
                 }
-
             }
         }
 
@@ -65,7 +63,7 @@ namespace hedwadtool
 
             Console.WriteLine(checksum.ToString("X8") + " not found");
 
-            return $"_{checksum.ToString("X8")}_.bmp";
+            return $"_{checksum.ToString("X8")}_";
         }
 
 
@@ -82,11 +80,22 @@ namespace hedwadtool
             return new ThpsWad(hed, wad);
         }
 
+        /// <summary>
+        /// Static method to create ThpsWad object from a given filename for either HED or WAD. Extensions are added automatically.
+        /// </summary>
+        /// <param name="file">Path to file.</param>
+        /// <returns>ThpsWad object.</returns>
         public static ThpsWad FromFile(string file)
         {
             return ThpsWad.FromFile(Path.ChangeExtension(file, ".hed"), Path.ChangeExtension(file, ".wad"));
         }
 
+        /// <summary>
+        /// Static method to create ThpsWad object from HED/WAD files.
+        /// </summary>
+        /// <param name="hedFile">Path to HED</param>
+        /// <param name="wadFile">Path to WAD</param>
+        /// <returns>ThpsWad object.</returns>
         public static ThpsWad FromFile(string hedFile, string wadFile)
         {
             if (!File.Exists(hedFile))
@@ -106,16 +115,13 @@ namespace hedwadtool
 
         public static ThpsWad FromList(string filename)
         {
-            ThpsWad wad = new ThpsWad();
-
             if (!File.Exists(filename))
                 throw new Exception($"Not found: {filename}");
 
-            wad.Entries.Clear();
-
             string[] lines = File.ReadAllLines(filename);
-
             string path = Path.ChangeExtension(filename, "");
+
+            ThpsWad wad = new ThpsWad();
 
             foreach (string s in lines)
             {
@@ -184,6 +190,9 @@ namespace hedwadtool
 
         public void Extract(string path)
         {
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
             StringBuilder sb = new StringBuilder();
 
             foreach (ThpsWadEntry en in Entries)
@@ -203,28 +212,29 @@ namespace hedwadtool
 
             if (archiveType != ArchiveType.Pre)
             {
-
                 if (archiveType == ArchiveType.WadHashed)
                 {
-                    using (BinaryWriter hed = new BinaryWriter(File.OpenWrite(Path.ChangeExtension(filename, ".hed"))))
+                    using (BinaryWriter hed = new BinaryWriter(File.Create(Path.ChangeExtension(filename, ".hed"))))
                     {
                         foreach (ThpsWadEntry w in Entries)
                             w.WriteWadHashed(hed);
+
+                        hed.Write((int)0);
                     }
                 }
 
                 if (archiveType == ArchiveType.WadRaw)
                 {
-                    using (BinaryWriter hed = new BinaryWriter(File.OpenWrite(Path.ChangeExtension(filename, ".hed"))))
+                    using (BinaryWriter hed = new BinaryWriter(File.Create(Path.ChangeExtension(filename, ".hed"))))
                     {
                         foreach (ThpsWadEntry w in Entries)
                             w.WriteWadRaw(hed);
 
-                        hed.Write((int)-1);
+                        hed.Write((byte)0xFF);
                     }
                 }
 
-                using (BinaryWriter wad = new BinaryWriter(File.OpenWrite(Path.ChangeExtension(filename, ".wad"))))
+                using (BinaryWriter wad = new BinaryWriter(File.Create(Path.ChangeExtension(filename, ".wad"))))
                 {
                     foreach (ThpsWadEntry w in Entries)
                     {
@@ -288,7 +298,7 @@ namespace hedwadtool
                     }
                     else
                     {
-                        ff.checksum = Checksum.Calc(lol[i], false);
+                        ff.checksum = Checksum.CalcLegacy(lol[i], false);
                     }
 
                     files.Add(ff);

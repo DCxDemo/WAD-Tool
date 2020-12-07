@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace hedwadtool
+namespace LegacyThps
 {
     class Checksum
     {
@@ -8,7 +8,7 @@ namespace hedwadtool
         static int c = 0;
         static int i = 0;
 
-        public static uint Calc(string k, bool allowCaps)
+        public static uint CalcLegacy(string k, bool allowCaps)
         {
             if (!allowCaps)
                 k = k.ToLower();

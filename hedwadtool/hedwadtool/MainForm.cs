@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.Diagnostics;
 using System.IO;
+using LegacyThps;
+using LegacyThps.Containers;
 
 namespace hedwadtool
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
             ThpsWad.InitDictionary();
@@ -23,28 +26,30 @@ namespace hedwadtool
 
             int counter = 0;
 
+            bruteBox.Clear();
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
             while (!stop)
             {
                 if (brute.ChecksumMatches())
                 {
-                    stop = true;
-                    MessageBox.Show("Match found!");        
+                    bruteBox.Text += $"Found {brute.GetText()} in {sw.Elapsed.TotalSeconds} seconds\r\n";
                 }
-                else
-                {
-                    brute.Next();
-                }
+
+                brute.Next();
 
                 counter++;
 
-                if (counter > 10000)
+                if (counter > 100000)
                 {
                     counter = 0;
                     Application.DoEvents();
                 }
             }
 
-            bruteBox.Text = brute.GetText();
+            sw.Stop();
         }
 
 
@@ -57,12 +62,12 @@ namespace hedwadtool
 
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
-            textBox3.Text = Checksum.Calc(textBox2.Text, checkBox1.Checked).ToString("X8");
+            textBox3.Text = Checksum.CalcLegacy(textBox2.Text, checkBox1.Checked).ToString("X8");
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            textBox3.Text = Checksum.Calc(textBox2.Text, checkBox1.Checked).ToString("X8");
+            textBox3.Text = Checksum.CalcLegacy(textBox2.Text, checkBox1.Checked).ToString("X8");
         }
 
         private void groupBox3_DragEnter(object sender, DragEventArgs e)
@@ -87,27 +92,29 @@ namespace hedwadtool
         private void groupBox3_DragDrop(object sender, DragEventArgs e)
         {
             string[] s = (string[])e.Data.GetData("FileDrop", false);
+            ProcessFile(s[0]);
+        }
 
+
+        private void ProcessFile(string filename)
+        {
             //detect whether its a directory or file
-            if ((File.GetAttributes(s[0]) & FileAttributes.Directory) == FileAttributes.Directory)
+            if ((File.GetAttributes(filename) & FileAttributes.Directory) == FileAttributes.Directory)
             {
-                ThpsWad wad = ThpsWad.FromFolder(s[0]);
+                ThpsWad wad = ThpsWad.FromFolder(filename);
                 wad.archiveType = GetArchiveType();
-                wad.Write(Directory.GetParent(s[0]).FullName + "\\kek.wad");
+                wad.Write(Path.Combine(Directory.GetParent(filename).FullName, Path.GetFileName(filename) + ".wad"));
             }
             else
             {
-                switch (Path.GetExtension(s[0]).ToLower())
+                switch (Path.GetExtension(filename).ToLower())
                 {
                     case ".hed":
                     case ".wad":
                         {
-                            string path = Path.Combine(Path.GetDirectoryName(s[0]), Path.GetFileNameWithoutExtension(s[0]));
+                            string path = Path.Combine(Path.GetDirectoryName(filename), Path.GetFileNameWithoutExtension(filename));
 
-                            if (!Directory.Exists(path))
-                                Directory.CreateDirectory(path);
-
-                            ThpsWad wad = ThpsWad.FromFile(s[0]);
+                            ThpsWad wad = ThpsWad.FromFile(filename);
                             wad.Extract(path);
 
                             break;
@@ -115,16 +122,16 @@ namespace hedwadtool
 
                     case ".txt":
                         {
-                            ThpsWad wad = ThpsWad.FromList(s[0]);
+                            ThpsWad wad = ThpsWad.FromList(filename);
                             wad.archiveType = GetArchiveType();
-                            wad.Write(s[0]);
+                            wad.Write(filename);
 
                             break;
                         }
 
 
                     case ".pre":
-                        throw new NotImplementedException();
+                        throw new NotImplementedException("Can't read legacy PRE yet.");
 
                     default:
                         MessageBox.Show("Doesn't look like a supported file.");
@@ -135,9 +142,9 @@ namespace hedwadtool
             //MessageBox.Show("wow");
 
             /*
-            if (s[0].ToLower().Contains(".hed"))
+            if (filename.ToLower().Contains(".hed"))
             {
-                hed = new ThpsWad(s[0]);
+                hed = new ThpsWad(filename);
 
                 StringBuilder sb = new StringBuilder();
 
@@ -149,25 +156,25 @@ namespace hedwadtool
 
                 checksumBox.Text = sb.ToString();
 
-                hed.ExtractWAD(Path.ChangeExtension(s[0], ".wad"));
+                hed.ExtractWAD(Path.ChangeExtension(filename, ".wad"));
 
                 MessageBox.Show("I'm here");
             }
             else
             {
-                if (s[0].ToLower().Contains("__layout"))
+                if (filename.ToLower().Contains("__layout"))
                 {
                     hed = new ThpsWad();
-                    hed.LoadFromLayout(s[0]);
+                    hed.LoadFromLayout(filename);
 
-                    hed.BuildWAD(s[0]);
+                    hed.BuildWAD(filename);
                 }
                 else
                 {
-                    if (s[0].ToLower().Contains(".pre"))
+                    if (filename.ToLower().Contains(".pre"))
                     {
                         hed = new ThpsWad();
-                        hed.ParsePre(s[0]);
+                        hed.ParsePre(filename);
 
                         StringBuilder sb = new StringBuilder();
                         foreach (ThpsWadEntry ss in hed.files)
@@ -180,7 +187,7 @@ namespace hedwadtool
                     }
                     else
                     {
-                        checksumBox.Text = Path.GetFileName(s[0]) + " doesn't look like WAD, PRE, or layout file.";
+                        checksumBox.Text = Path.GetFileName(filename) + " doesn't look like WAD, PRE, or layout file.";
                     }
                 }
             }

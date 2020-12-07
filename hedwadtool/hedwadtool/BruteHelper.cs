@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using LegacyThps;
 
 namespace hedwadtool
 {
@@ -51,7 +51,7 @@ namespace hedwadtool
 
         public bool ChecksumMatches()
         {
-            if (checksumuint == Checksum.Calc(sb.ToString(), true)) //true because we already brute lowercase
+            if (checksumuint == Checksum.CalcLegacy(sb.ToString(), true)) //true because we already brute lowercase
                 return true;
 
             return false;

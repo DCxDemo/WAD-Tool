@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System;
 
-namespace hedwadtool
+namespace LegacyThps.Containers
 {
     class ThpsWadEntry
     {
@@ -41,7 +41,7 @@ namespace hedwadtool
         public ThpsWadEntry(string filename)
         {
             name = Path.GetFileName(filename);
-            checksum = Checksum.Calc(name, false);
+            checksum = Checksum.CalcLegacy(name, false);
             Data = File.ReadAllBytes(filename);
             size = Data.Length;
             offset = 0;
@@ -52,7 +52,7 @@ namespace hedwadtool
             name = n;
             size = s;
             offset = off;
-            checksum = Checksum.Calc(name, false);
+            checksum = Checksum.CalcLegacy(name, false);
         }
 
         public void Save(string path)
@@ -69,7 +69,7 @@ namespace hedwadtool
 
         public void WriteWadRaw(BinaryWriter bw)
         {
-            bw.Write(name);
+            bw.Write(name.ToCharArray());
 
             int diff = size % 2048;
             int diff2 = name.Length % 4;
